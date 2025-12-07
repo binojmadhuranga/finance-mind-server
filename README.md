@@ -33,5 +33,5 @@ It powers the Personal Finance Tracker application by handling user authenticati
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone https://github.com/your-username/finance-tracker-server
+git clone https://github.com/binojmadhuranga/finance-tracker-server
 cd finance-tracker-server
