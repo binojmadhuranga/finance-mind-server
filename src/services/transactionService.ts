@@ -56,3 +56,19 @@ export const updateTransaction = async (
 
   return transaction;
 };
+
+
+export const deleteTransaction = async (
+  userId: number,
+  transactionId: number
+) => {
+  const transaction = await Transaction.findOne({
+    where: { id: transactionId, userId },
+  });
+
+  if (!transaction) {
+    throw new Error("Transaction not found");
+  }
+
+  await transaction.destroy();
+};
