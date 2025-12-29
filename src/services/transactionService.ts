@@ -1,5 +1,6 @@
 import Transaction from "../models/Transaction";
 import Category from "../models/Category";
+import { Op } from "sequelize";
 
 interface CreateTransactionInput {
   amount: number;
@@ -89,4 +90,20 @@ export const deleteTransaction = async (
   }
 
   await transaction.destroy();
+};
+
+
+export const searchUserTransactions = async (
+  userId: number,
+  query: string
+) => {
+  return await Transaction.findAll({
+    where: {
+      userId,
+      note: {
+        [Op.like]: `%${query}%`,
+      },
+    },
+    order: [["date", "DESC"]],
+  });
 };
