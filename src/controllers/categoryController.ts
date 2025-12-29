@@ -45,7 +45,8 @@ export const getCategories = async (
     );
 
     res.json(categories);
-  } catch {
+  } catch(err) {
+     console.error("GET CATEGORIES ERROR 👉", err);
     res.status(500).json({ message: "Failed to fetch categories" });
   }
 };

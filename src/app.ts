@@ -4,6 +4,7 @@ import authRoutes from "./routes/authRouter";
 import cookieParser from "cookie-parser";
 import transactionRoutes from "./routes/transactionRouter";
 import categoryRoutes from "./routes/categoryRoutes";
+import "./models";
 
 const app = express();
 

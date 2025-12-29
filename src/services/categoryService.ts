@@ -1,4 +1,7 @@
+import { fn, col} from "sequelize";
 import Category from "../models/Category";
+import Transaction from "../models/Transaction";
+import { literal } from "sequelize";
 
 
 export const createCategory = async (
@@ -26,6 +29,35 @@ export const createCategory = async (
 export const getUserCategories = async (userId: number) => {
   return await Category.findAll({
     where: { userId },
+    attributes: [
+      "id",
+      "name",
+      "type",
+      [
+        literal(`
+          COALESCE(
+            SUM(
+              CASE
+                WHEN CAST("Transactions"."type" AS TEXT)
+                   = CAST("Category"."type" AS TEXT)
+                THEN CAST("Transactions"."amount" AS DECIMAL)
+                ELSE 0
+              END
+            ),
+            0
+          )
+        `),
+        "totalAmount",
+      ],
+    ],
+    include: [
+      {
+        model: Transaction,
+        attributes: [],
+        required: false,
+      },
+    ],
+    group: ["Category.id", "Category.name", "Category.type"],
     order: [["name", "ASC"]],
   });
 };
