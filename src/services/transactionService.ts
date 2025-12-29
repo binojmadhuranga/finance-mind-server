@@ -1,4 +1,6 @@
 import Transaction from "../models/Transaction";
+import Category from "../models/Category";
+import { Op } from "sequelize";
 
 interface CreateTransactionInput {
   amount: number;
@@ -21,15 +23,32 @@ export const createTransaction = async (
   userId: number,
   data: CreateTransactionInput
 ) => {
+  
+  const category = await Category.findOne({
+    where: {
+      id: data.categoryId,
+      userId,
+    },
+  });
+
+  if (!category) {
+    throw new Error("Invalid category");
+  }
+
+  if (category.type !== data.type) {
+    throw new Error("Category type does not match transaction type");
+  }
+
   return await Transaction.create({
     amount: data.amount,
     type: data.type,
     date: data.date,
     note: data.note,
-    categoryId: data.categoryId,
+    categoryId: category.id,
     userId,
   });
 };
+
 
 export const getUserTransactions = async (userId: number) => {
   return await Transaction.findAll({
@@ -71,4 +90,20 @@ export const deleteTransaction = async (
   }
 
   await transaction.destroy();
+};
+
+
+export const searchUserTransactions = async (
+  userId: number,
+  query: string
+) => {
+  return await Transaction.findAll({
+    where: {
+      userId,
+      note: {
+        [Op.like]: `%${query}%`,
+      },
+    },
+    order: [["date", "DESC"]],
+  });
 };
