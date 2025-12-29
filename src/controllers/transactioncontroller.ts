@@ -88,3 +88,29 @@ export const deleteTransaction = async (
   }
 };
 
+export const searchTransactions = async (
+  req: AuthRequest,
+  res: Response
+) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const query = req.query.query as string;
+
+    if (!query || query.trim() === "") {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    const transactions =
+      await transactionService.searchUserTransactions(
+        req.user.id,
+        query
+      );
+
+    res.json(transactions);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to search transactions" });
+  }
+};
