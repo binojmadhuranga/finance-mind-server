@@ -8,12 +8,25 @@ import "./models";
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5050",
+  "https://finance-mind-web.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5050", 
-    credentials: true,               
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
+    credentials: true,
   })
 );
+
+
 app.use(express.json());
 app.use(cookieParser());
 
