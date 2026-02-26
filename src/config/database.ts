@@ -12,7 +12,12 @@ const sequelize = new Sequelize(
     dialect: "postgres",
     port: Number(process.env.DB_PORT),
     logging: false,
+      define: {
+      schema: "finance",
+    },
   }
 );
+
+
 
 export default sequelize;
