@@ -27,3 +27,5 @@ jobs:
             npm run build
             pm2 restart finance-tracker-server || pm2 start dist/server.js --name finance-tracker-server
             pm2 save
+
+            
