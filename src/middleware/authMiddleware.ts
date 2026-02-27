@@ -21,3 +21,4 @@ export const authMiddleware = (
     return res.status(401).json({ error: "Invalid token" });
   }
 };
+
