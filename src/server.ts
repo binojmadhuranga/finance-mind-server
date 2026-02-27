@@ -8,6 +8,9 @@ const PORT = process.env.PORT || 5000;
     await sequelize.authenticate();
     console.log("Database connected");
 
+    await sequelize.query('CREATE SCHEMA IF NOT EXISTS finance;');
+    console.log("Schema ensured");
+
     await sequelize.sync();
     console.log("Database synced");
 
