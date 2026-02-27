@@ -17,8 +17,12 @@ export const createTransaction = async (
     );
 
     res.status(201).json(transaction);
-  } catch {
-    res.status(500).json({ message: "Failed to create transaction" });
+  } catch (error) {
+    console.error("Error creating transaction:", error);
+    res.status(500).json({ 
+      message: "Failed to create transaction",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
   }
 };
 

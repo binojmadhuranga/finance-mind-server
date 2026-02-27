@@ -7,7 +7,9 @@ interface CreateTransactionInput {
   type: "income" | "expense";
   date: string;
   note?: string;
-  categoryId: number;
+  description?: string;
+  categoryId?: number;
+  category?: string;
 }
 
 interface UpdateTransactionInput {
@@ -23,13 +25,26 @@ export const createTransaction = async (
   userId: number,
   data: CreateTransactionInput
 ) => {
+  let category;
   
-  const category = await Category.findOne({
-    where: {
-      id: data.categoryId,
-      userId,
-    },
-  });
+  // Support both categoryId and category name
+  if (data.categoryId) {
+    category = await Category.findOne({
+      where: {
+        id: data.categoryId,
+        userId,
+      },
+    });
+  } else if (data.category) {
+    category = await Category.findOne({
+      where: {
+        name: data.category,
+        userId,
+      },
+    });
+  } else {
+    throw new Error("Either categoryId or category name is required");
+  }
 
   if (!category) {
     throw new Error("Invalid category");
@@ -39,11 +54,14 @@ export const createTransaction = async (
     throw new Error("Category type does not match transaction type");
   }
 
+  // Support both 'note' and 'description' fields
+  const note = data.note || data.description;
+
   return await Transaction.create({
     amount: data.amount,
     type: data.type,
     date: data.date,
-    note: data.note,
+    note: note,
     categoryId: category.id,
     userId,
   });
